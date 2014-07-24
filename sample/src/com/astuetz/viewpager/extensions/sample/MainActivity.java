@@ -33,8 +33,11 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.app.ActionBar;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.astuetz.PagerSlidingTabStrip.IconTabProvider;
 
 public class MainActivity extends FragmentActivity {
 
@@ -52,7 +55,17 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+                LayoutInflater inflater = LayoutInflater.from(this);
+
+                View tab = inflater.inflate(R.layout.tab, null);
+
+                getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                getActionBar().setCustomView(tab);
+                getActionBar().setHomeButtonEnabled(true);
+                //getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		tabs = (PagerSlidingTabStrip) tab.findViewById(R.id.tabs);
+
 		pager = (ViewPager) findViewById(R.id.pager);
 		adapter = new MyPagerAdapter(getSupportFragmentManager());
 
@@ -65,12 +78,6 @@ public class MainActivity extends FragmentActivity {
 		tabs.setViewPager(pager);
 
 		changeColor(currentColor);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 
 	@Override
@@ -90,6 +97,7 @@ public class MainActivity extends FragmentActivity {
 
 	private void changeColor(int newColor) {
 
+            newColor = Color.WHITE;
 		tabs.setIndicatorColor(newColor);
 
 		// change ActionBar color just if an ActionBar is available
@@ -127,8 +135,8 @@ public class MainActivity extends FragmentActivity {
 			oldBackground = ld;
 
 			// http://stackoverflow.com/questions/11002691/actionbar-setbackgrounddrawable-nulling-background-from-thread-handler
-			getActionBar().setDisplayShowTitleEnabled(false);
-			getActionBar().setDisplayShowTitleEnabled(true);
+			//getActionBar().setDisplayShowTitleEnabled(false);
+			//getActionBar().setDisplayShowTitleEnabled(true);
 
 		}
 
@@ -173,10 +181,29 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 
-	public class MyPagerAdapter extends FragmentPagerAdapter {
+	public class MyPagerAdapter extends FragmentPagerAdapter implements IconTabProvider {
 
-		private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
-				"Top New Free", "Trending" };
+            private final int[] ICONS = {
+                R.drawable.ic_launcher_chrome,
+                R.drawable.ic_launcher_gplus,
+                R.drawable.actionbar_bottom,
+                R.drawable.ic_action_user,
+                R.drawable.tabs_pattern,
+                R.drawable.background_card,
+                R.drawable.ic_launcher_actionbar,
+                R.drawable.ic_launcher_gmaps,
+                R.drawable.ic_launcher_gmail,
+                R.drawable.ic_launcher,
+            };
+
+        @Override
+        public int getPageIconResId(int position) {
+            return ICONS[position];
+        }
+
+		private final String[] TITLES = { "Categories", "Home", "Top Paid", "Top Free",
+// "Top Grossing", "Top New Paid", "Top New Free", "Trending" 
+};
 
 		public MyPagerAdapter(FragmentManager fm) {
 			super(fm);
